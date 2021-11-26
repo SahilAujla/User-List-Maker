@@ -6,11 +6,15 @@ import Button from './Button';
 
 import classes from './ErrorModal.module.css';
 
-const ErrorModal = props => {
+import ReactDOM from 'react-dom';
+
+const Backdrop = props => {
+    return <div className={classes.backdrop} onClick={props.onConfirm}/>
+}
+
+const ModalOverlay = props => {
     return (
-        <div>
-            <div className={classes.backdrop} onClick={props.errorHandler}/>
-                  <Card className={classes.modal}>
+        <Card className={classes.modal}>
               <header className={classes.header}>
                   <h2>{props.title}</h2>
               </header>
@@ -20,9 +24,18 @@ const ErrorModal = props => {
               <footer className={classes.actions}>
                   <Button onClick={props.errorHandler}>Okay</Button>
               </footer>
-                  </Card>
-        </div> 
+        </Card>
+    )
+}
+
+const ErrorModal = props => {
+    return (
+        <React.Fragment>
+            {ReactDOM.createPortal(<Backdrop onConfirm={props.errorHandler}/>, document.getElementById('backdrop-root'))}
+            {ReactDOM.createPortal(<ModalOverlay title={props.title} message={props.message} errorHandler={props.errorHandler}/>, document.getElementById('overlay-root'))}
+        </React.Fragment> 
     );
 };
 
 export default ErrorModal;
+ 
